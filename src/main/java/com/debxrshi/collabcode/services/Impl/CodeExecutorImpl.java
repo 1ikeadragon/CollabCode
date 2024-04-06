@@ -74,15 +74,22 @@ public class CodeExecutorImpl implements CodeExecutor {
         Process p = pb.start();
 
         // Setting execution time-limit as 5 seconds
-        p.waitFor(5,TimeUnit.SECONDS);
-        long endTime = System.currentTimeMillis();
-        float time = (float) (endTime - startTime) /1000;
+        boolean finished = p.waitFor(10,TimeUnit.SECONDS);
 
-        String output = outputReader(p);
+        if(!finished){
+            p.destroyForcibly();
+            result.setOut("Your code took too long to execute!");
+        }
+        else {
+            long endTime = System.currentTimeMillis();
+            float time = (float) (endTime - startTime) / 1000;
 
-        // Returning final code result and time-to-exec
-        result.setOut(output.trim());
-        result.setTte(time);
+            String output = outputReader(p);
+
+            // Returning final code result and time-to-exec
+            result.setOut(output.trim());
+            result.setTte(time);
+        }
         return result;
     }
 

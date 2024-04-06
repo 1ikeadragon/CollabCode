@@ -12,7 +12,6 @@ root.render(
     <Nav/>
     <div className='sex'>
     <CodeEditor />
-    <Terminal />  
     </div>
   </React.StrictMode>
 );

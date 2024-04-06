@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 function Nav() {
   return (
     <div className="Nav">
-        sex
+        Online:
     </div>
   );
 }
