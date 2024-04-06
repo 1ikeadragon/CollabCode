@@ -2,11 +2,11 @@ package com.debxrshi.collabcode.models;
 
 public class ExecResult {
     private String out;
-    private String tte;
+    private float tte;
 
     public ExecResult() {
     }
-    public ExecResult(String out, String tte) {
+    public ExecResult(String out, float tte) {
         this.out = out;
         this.tte = tte;
     }
@@ -19,11 +19,11 @@ public class ExecResult {
         this.out = out;
     }
 
-    public String getTte() {
+    public float getTte() {
         return tte;
     }
 
-    public void setTte(String tte) {
+    public void setTte(float tte) {
         this.tte = tte;
     }
 }

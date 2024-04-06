@@ -18,7 +18,7 @@ public class ExecutionController {
     @Autowired
     private CodeExecutorImpl exec;
     @PostMapping("/exec")
-    public ExecResult executeCode(@RequestBody Code code) throws IOException {
+    public ExecResult executeCode(@RequestBody Code code) throws IOException, InterruptedException {
         return exec.execCode(code);
     }
 }
