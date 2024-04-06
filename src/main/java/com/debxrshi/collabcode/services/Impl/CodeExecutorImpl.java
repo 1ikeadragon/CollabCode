@@ -41,10 +41,10 @@ public class CodeExecutorImpl implements CodeExecutor {
     }
 
     private ExecResult execPythonCode(Code code) throws IOException {
-
         String dockerCommand = String.format("echo \"%s\" > a.py && python3 a.py", code.getCode().replace("\"", "\\\""));
         Process p = new ProcessBuilder()
                 .command("docker","run","-i","--rm","cc-python:dev","sh","-c", dockerCommand)
+                .redirectErrorStream(true)
                 .start();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -59,6 +59,7 @@ public class CodeExecutorImpl implements CodeExecutor {
         result.setOut(output.toString().trim()); // trim to remove trailing newline
         return result;
     }
+
 
 
     private ExecResult execJavaScriptCode(Code code) throws IOException {
