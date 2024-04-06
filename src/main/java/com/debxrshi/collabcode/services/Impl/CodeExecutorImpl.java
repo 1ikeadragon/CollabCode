@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CodeExecutorImpl implements CodeExecutor {
 
-    public ExecResult execCode(Code code) throws IOException {
+    public ExecResult execCode(Code code) throws IOException, InterruptedException {
         String lang = code.getLang();
         return switch (lang) {
             case "python" -> execPythonCode(code);
@@ -32,34 +33,60 @@ public class CodeExecutorImpl implements CodeExecutor {
             case "bash" -> execBashCode(code);
             case "powershell" -> execPSCode(code);
             case "A++" -> execAppCode(code);
-            default -> new ExecResult("Unsupported Language: "+code.getLang(),"0.00");
+            default -> new ExecResult("Unsupported Language: "+code.getLang(), 0.00F);
             };
         }
 
+    public String outputReader(Process process){
+        // Setting up a BufferReader to digest output of container process
+        try{
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while((line = reader.readLine()) != null){
+                sb.append(line);
+                sb.append(System.lineSeparator());
+            }
+            return sb.toString();
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
     private ExecResult execASM86Code(Code code) {
         return null;
     }
 
-    private ExecResult execPythonCode(Code code) throws IOException {
+    private ExecResult execPythonCode(Code code) throws IOException, InterruptedException {
+        // Setting docker command for python
         String dockerCommand = String.format("echo \"%s\" > a.py && python3 a.py", code.getCode().replace("\"", "\\\""));
-        Process p = new ProcessBuilder()
-                .command("docker","run","-i","--rm","cc-python:dev","sh","-c", dockerCommand)
-                .redirectErrorStream(true)
-                .start();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
-        StringBuilder output = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            output.append(line).append("\n");
-        }
+        // Creating process
+        ProcessBuilder pb = new ProcessBuilder()
+                .command("docker","run","--rm","--network","none",
+                        "--memory","150m","cc-python:dev","sh","-c", dockerCommand)
+                .redirectErrorStream(true);
 
         ExecResult result = new ExecResult();
-        result.setOut(output.toString().trim());
+        long startTime = System.currentTimeMillis();
+
+        // Starting the process
+        Process p = pb.start();
+
+        // Setting execution time-limit as 5 seconds
+        p.waitFor(5,TimeUnit.SECONDS);
+        long endTime = System.currentTimeMillis();
+        float time = (float) (endTime - startTime) /1000;
+
+        String output = outputReader(p);
+
+        // Returning final code result and time-to-exec
+        result.setOut(output.trim());
+        result.setTte(time);
         return result;
     }
 
-    private ExecResult execJavaScriptCode(Code code) throws IOException {
+    private ExecResult execJavaScriptCode(Code code) throws IOException, InterruptedException {
         Process p = new ProcessBuilder()
                 .command("docker","-v")
                 .start();
