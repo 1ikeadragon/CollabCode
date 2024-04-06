@@ -54,9 +54,8 @@ public class CodeExecutorImpl implements CodeExecutor {
             output.append(line);
         }
 
-        // Create and return the result
         ExecResult result = new ExecResult();
-        result.setOut(output.toString().trim()); // trim to remove trailing newline
+        result.setOut(output.toString().trim());
         return result;
     }
 
