@@ -4,6 +4,13 @@ public class ExecResult {
     private String out;
     private String tte;
 
+    public ExecResult() {
+    }
+    public ExecResult(String out, String tte) {
+        this.out = out;
+        this.tte = tte;
+    }
+
     public String getOut() {
         return out;
     }

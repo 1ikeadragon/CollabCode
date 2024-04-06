@@ -21,7 +21,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             case "haskell" -> execHaskellCode(code);
             case "brainfuck" -> execBrainfuckCode(code);
             case "riscv" -> execRISCVCode(code);
-            case "asn86" -> execASM86Code(code);
+            case "asm86" -> execASM86Code(code);
             case "arm64" -> execARM64Code(code);
             case "rust" -> execRustCode(code);
             case "c" -> execCCode(code);
@@ -32,7 +32,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             case "bash" -> execBashCode(code);
             case "powershell" -> execPSCode(code);
             case "A++" -> execAppCode(code);
-            default -> throw new IllegalArgumentException("Unsupported language: " + lang);
+            default -> new ExecResult("Unsupported Language: "+code.getLang(),"0.00");
             };
         }
 
@@ -51,15 +51,13 @@ public class CodeExecutorImpl implements CodeExecutor {
         String line;
         StringBuilder output = new StringBuilder();
         while ((line = reader.readLine()) != null) {
-            output.append(line);
+            output.append(line).append("\n");
         }
 
         ExecResult result = new ExecResult();
         result.setOut(output.toString().trim());
         return result;
     }
-
-
 
     private ExecResult execJavaScriptCode(Code code) throws IOException {
         Process p = new ProcessBuilder()
