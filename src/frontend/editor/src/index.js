@@ -1,13 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import Nav from './Components/Nav';
+import CodeEditor from './Components/CodeEditor';
+import Terminal from './Components/Terminal';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Nav/>
+    <div className='sex'>
+    <CodeEditor />
+    <Terminal />  
+    </div>
   </React.StrictMode>
 );
 

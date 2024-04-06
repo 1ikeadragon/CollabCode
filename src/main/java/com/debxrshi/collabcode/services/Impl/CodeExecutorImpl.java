@@ -52,7 +52,6 @@ public class CodeExecutorImpl implements CodeExecutor {
         StringBuilder output = new StringBuilder();
         while ((line = reader.readLine()) != null) {
             output.append(line);
-            output.append("\n");
         }
 
         // Create and return the result
