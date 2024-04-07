@@ -27,7 +27,7 @@ function CodeEditor() {
         var codes=editorRef.current.getValue()
         const obj={code:codes,lang:language}
         console.log(language)
-        fetch('http://127.0.0.1:8080/exec', {
+        fetch('http://192.168.1.3:8080/exec', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
