@@ -6,6 +6,6 @@ import com.debxrshi.collabcode.models.ExecResult;
 import java.io.IOException;
 
 public interface CodeExecutor {
-    ExecResult execCode(Code code) throws IOException, InterruptedException;
+    ExecResult execCode(Code code);
     String outputReader(Process process);
 }

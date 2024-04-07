@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class CodeExecutorImpl implements CodeExecutor {
 
-    public ExecResult execCode(Code code) throws IOException, InterruptedException {
+    public ExecResult execCode(Code code){
         String lang = code.getLang();
         return switch (lang) {
             case "python" -> execPythonCode(code);
-            case "javascript" -> execJavaScriptCode(code);
-            case "java" -> execJavaCode(code);
+//            case "javascript" -> execJavaScriptCode(code);
+//            case "java" -> execJavaCode(code);
             case "haskell" -> execHaskellCode(code);
             case "brainfuck" -> execBrainfuckCode(code);
             case "riscv" -> execRISCVCode(code);
@@ -33,7 +33,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             case "bash" -> execBashCode(code);
             case "powershell" -> execPSCode(code);
             case "A++" -> execAppCode(code);
-            default -> new ExecResult("Unsupported Language: "+code.getLang(), 0.00F);
+            default -> new ExecResult("Unsupported Language: "+code.getLang(),0.00F);
             };
         }
 
@@ -45,7 +45,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             String line = null;
             while((line = reader.readLine()) != null){
                 sb.append(line);
-                sb.append(System.lineSeparator());
+                sb.append("\n"); // append newline character
             }
             return sb.toString();
         }
@@ -53,60 +53,70 @@ public class CodeExecutorImpl implements CodeExecutor {
             throw new RuntimeException(e);
         }
     }
+
     private ExecResult execASM86Code(Code code) {
         return null;
     }
 
-    private ExecResult execPythonCode(Code code) throws IOException, InterruptedException {
-        // Setting docker command for python
-        String dockerCommand = String.format("echo \"%s\" > a.py && python3 a.py", code.getCode().replace("\"", "\\\""));
+    private ExecResult execPythonCode(Code code) {
 
-        // Creating process
-        ProcessBuilder pb = new ProcessBuilder()
-                .command("docker","run","--rm","--network","none",
-                        "--memory","150m","cc-python:dev","sh","-c", dockerCommand)
-                .redirectErrorStream(true);
+        try {
+            // Setting docker command for python
+            String dockerCommand = String.format("echo \"%s\" > a.py && python3 a.py", code.getCode().replace("\"", "\\\""));
 
-        ExecResult result = new ExecResult();
-        long startTime = System.currentTimeMillis();
+            // Creating process
+            ProcessBuilder pb = new ProcessBuilder()
+                    .command("docker", "run", "--rm", "--network", "none",
+                            "--memory", "150m", "cc-python:dev", "sh", "-c", dockerCommand)
+                    .redirectErrorStream(true);
 
-        // Starting the process
-        Process p = pb.start();
+            ExecResult result = new ExecResult();
+            long startTime = System.currentTimeMillis();
 
-        // Setting execution time-limit as 5 seconds
-        boolean finished = p.waitFor(10,TimeUnit.SECONDS);
+            // Starting the process
+            Process p = pb.start();
 
-        if(!finished){
-            p.destroyForcibly();
-            result.setOut("Your code took too long to execute!");
+            // Setting execution time-limit as 5 seconds
+            boolean finished = p.waitFor(10, TimeUnit.SECONDS);
+            if (!finished) {
+                p.destroyForcibly();
+                long endTime = System.currentTimeMillis();
+                float time = (float) (endTime - startTime) / 1000;
+                result.setOut("Your code took too long to execute!");
+                result.setTte(time);
+            }
+            else {
+                long endTime = System.currentTimeMillis();
+                float time = (float) (endTime - startTime) / 1000;
+
+                String output = outputReader(p);
+
+                // Returning final code result and time-to-exec
+                result.setOut(output.trim());
+                result.setTte(time);
+            }
+            return result;
         }
-        else {
-            long endTime = System.currentTimeMillis();
-            float time = (float) (endTime - startTime) / 1000;
-
-            String output = outputReader(p);
-
-            // Returning final code result and time-to-exec
-            result.setOut(output.trim());
-            result.setTte(time);
+        catch (Exception e){
+            throw new RuntimeException(e);
         }
-        return result;
+
     }
 
-    private ExecResult execJavaScriptCode(Code code) throws IOException, InterruptedException {
-        Process p = new ProcessBuilder()
-                .command("docker","-v")
-                .start();
-        ExecResult result = new ExecResult();
-        return result;
-    }
-    private ExecResult execJavaCode(Code code) throws IOException {
-        Process p = new ProcessBuilder()
-                .command("docker","-v")
-                .start();
-        ExecResult result = new ExecResult();
-        return result;
-    }
+//    private ExecResult execJavaScriptCode(Code code) throws IOException, InterruptedException {
+//        Process p = new ProcessBuilder()
+//                .command("docker","-v")
+//                .start();
+//        ExecResult result = new ExecResult();
+//        return result;
+//    }
+//    private ExecResult execJavaCode(Code code) throws IOException {
+//        Process p = new ProcessBuilder()
+//                .command("docker","-v")
+//                .start();
+//        ExecResult result = new ExecResult();
+//        return result;
+//    }
 
     private ExecResult execAppCode(Code code) {
         return null;

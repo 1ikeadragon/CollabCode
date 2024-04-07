@@ -2,3 +2,4 @@
 .mvn/
 .vscode/
 src/frontend/editor/node_modules
+target/
