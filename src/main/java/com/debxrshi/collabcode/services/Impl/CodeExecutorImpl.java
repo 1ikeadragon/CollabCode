@@ -18,7 +18,7 @@ public class CodeExecutorImpl implements CodeExecutor {
         return switch (lang) {
             case "python" -> execPythonCode(code);
 //            case "javascript" -> execJavaScriptCode(code);
-//            case "java" -> execJavaCode(code);
+            case "java" -> execJavaCode(code);
             case "haskell" -> execHaskellCode(code);
             case "brainfuck" -> execBrainfuckCode(code);
             case "riscv" -> execRISCVCode(code);
@@ -87,8 +87,34 @@ public class CodeExecutorImpl implements CodeExecutor {
 
     }
 
-    private ExecResult execJavaScriptCode(Code code) {
-        return null;
+    private ExecResult execJavaCode(Code code) {
+
+        try {
+            String dockerCommand = String.format("echo \"%s\" > Main.java && javac Main.java && timeout 10 java Main ; echo $? ; exit", code.getCode().replace("\"", "\\\""));
+            ProcessBuilder pb = new ProcessBuilder()
+                    .command("docker", "run", "--rm", "--network", "none",
+                            "--memory", "1000m", "cc-java:dev", "sh", "-c", dockerCommand)
+                    .redirectErrorStream(true);
+            ExecResult result = new ExecResult();
+            Process p = pb.start();
+            long startTime = System.currentTimeMillis();
+            String output = outputReader(p);
+            long endTime = System.currentTimeMillis();
+            float time = (float) (endTime - startTime) / 1000;
+            if(output.contains("124")){
+                result.setOut("Your code took too long to execute!");
+                result.setTte(time);
+            }
+            else{
+                result.setOut(output.trim());
+                result.setTte(time);
+            }
+            return result;
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
 
     private ExecResult execAppCode(Code code) {
