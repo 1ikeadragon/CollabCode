@@ -6,8 +6,8 @@ import com.debxrshi.collabcode.services.CodeExecutor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -38,14 +38,13 @@ public class CodeExecutorImpl implements CodeExecutor {
         }
 
     public String outputReader(Process process){
-        // Setting up a BufferReader to digest output of container process
         try{
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder sb = new StringBuilder();
             String line = null;
             while((line = reader.readLine()) != null){
                 sb.append(line);
-                sb.append("\n"); // append newline character
+                sb.append("\n");
             }
             return sb.toString();
         }
@@ -61,37 +60,22 @@ public class CodeExecutorImpl implements CodeExecutor {
     private ExecResult execPythonCode(Code code) {
 
         try {
-            // Setting docker command for python
-            String dockerCommand = String.format("echo \"%s\" > a.py && python3 a.py", code.getCode().replace("\"", "\\\""));
-
-            // Creating process
+            String dockerCommand = String.format("echo \"%s\" > a.py && timeout 10 python3 a.py ; exit", code.getCode().replace("\"", "\\\""));
             ProcessBuilder pb = new ProcessBuilder()
                     .command("docker", "run", "--rm", "--network", "none",
                             "--memory", "150m", "cc-python:dev", "sh", "-c", dockerCommand)
                     .redirectErrorStream(true);
-
             ExecResult result = new ExecResult();
-            long startTime = System.currentTimeMillis();
-
-            // Starting the process
             Process p = pb.start();
-
-            // Setting execution time-limit as 5 seconds
-            boolean finished = p.waitFor(10, TimeUnit.SECONDS);
-            if (!finished) {
-                p.destroyForcibly();
-                long endTime = System.currentTimeMillis();
-                float time = (float) (endTime - startTime) / 1000;
+            long startTime = System.currentTimeMillis();
+            String output = outputReader(p);
+            long endTime = System.currentTimeMillis();
+            float time = (float) (endTime - startTime) / 1000;
+            if(output.contains("Terminated")){
                 result.setOut("Your code took too long to execute!");
                 result.setTte(time);
             }
-            else {
-                long endTime = System.currentTimeMillis();
-                float time = (float) (endTime - startTime) / 1000;
-
-                String output = outputReader(p);
-
-                // Returning final code result and time-to-exec
+            else{
                 result.setOut(output.trim());
                 result.setTte(time);
             }
@@ -103,20 +87,9 @@ public class CodeExecutorImpl implements CodeExecutor {
 
     }
 
-//    private ExecResult execJavaScriptCode(Code code) throws IOException, InterruptedException {
-//        Process p = new ProcessBuilder()
-//                .command("docker","-v")
-//                .start();
-//        ExecResult result = new ExecResult();
-//        return result;
-//    }
-//    private ExecResult execJavaCode(Code code) throws IOException {
-//        Process p = new ProcessBuilder()
-//                .command("docker","-v")
-//                .start();
-//        ExecResult result = new ExecResult();
-//        return result;
-//    }
+    private ExecResult execJavaScriptCode(Code code) {
+        return null;
+    }
 
     private ExecResult execAppCode(Code code) {
         return null;
