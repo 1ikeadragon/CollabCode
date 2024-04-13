@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+    
 
 @Service
 public class CodeExecutorImpl implements CodeExecutor {
@@ -42,7 +41,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder sb = new StringBuilder();
             String line = null;
-            int maxOutputSize = 100;
+            int maxOutputSize = 100000;
             while((line = reader.readLine()) != null){
                 if (sb.length() + line.length() > maxOutputSize) {
                     sb.append("\nYour code generates output longer than allowed limit.");
@@ -75,6 +74,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             Process p = pb.start();
             long startTime = System.currentTimeMillis();
             String output = outputReader(p);
+            p.destroyForcibly();
             long endTime = System.currentTimeMillis();
             float time = (float) (endTime - startTime) / 1000;
             if(output.contains("Killed")){
@@ -109,7 +109,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             float time = (float) (endTime - startTime - 1) / 1000;
             if(output.contains("Killed")){
                 result.setOut("Your code took too long to execute!");
-                result.setTte(time);
+                result.setTte(10F);
             }
             else{
                 result.setOut(output.trim());
