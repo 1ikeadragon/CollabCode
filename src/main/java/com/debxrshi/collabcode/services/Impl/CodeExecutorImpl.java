@@ -42,7 +42,12 @@ public class CodeExecutorImpl implements CodeExecutor {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder sb = new StringBuilder();
             String line = null;
+            int maxOutputSize = 100;
             while((line = reader.readLine()) != null){
+                if (sb.length() + line.length() > maxOutputSize) {
+                    sb.append("\nYour code generates output longer than allowed limit.");
+                    break;
+                }
                 sb.append(line);
                 sb.append("\n");
             }
@@ -52,6 +57,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             throw new RuntimeException(e);
         }
     }
+
 
     private ExecResult execASM86Code(Code code) {
         return null;
@@ -142,7 +148,33 @@ public class CodeExecutorImpl implements CodeExecutor {
     }
 
     private ExecResult execCppCode(Code code) {
-        return null;
+
+        try {
+            String dockerCommand = String.format("echo \"%s\" > main.cpp && g++ main.cpp -o main && timeout -s SIGKILL 10 ./main ; exit", code.getCode().replace("\"", "\\\""));
+            ProcessBuilder pb = new ProcessBuilder()
+                    .command("docker", "run", "--rm", "--network", "none",
+                            "--memory", "2500m", "cc-gxx:dev", "sh", "-c", dockerCommand)
+                    .redirectErrorStream(true);
+            ExecResult result = new ExecResult();
+            Process p = pb.start();
+            long startTime = System.currentTimeMillis();
+            String output = outputReader(p);
+            long endTime = System.currentTimeMillis();
+            float time = (float) (endTime - startTime - 1) / 1000;
+            if(output.contains("Killed")){
+                result.setOut("Your code took too long to execute!");
+                result.setTte(time);
+            }
+            else{
+                result.setOut(output.trim());
+                result.setTte(time);
+            }
+            return result;
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
 
     private ExecResult execCCode(Code code) {
