@@ -60,7 +60,7 @@ public class CodeExecutorImpl implements CodeExecutor {
     private ExecResult execPythonCode(Code code) {
 
         try {
-            String dockerCommand = String.format("echo \"%s\" > a.py && timeout 10 python3 a.py ; exit", code.getCode().replace("\"", "\\\""));
+            String dockerCommand = String.format("echo \"%s\" > a.py && timeout -s SIGKILL 10 python3 a.py ; exit", code.getCode().replace("\"", "\\\""));
             ProcessBuilder pb = new ProcessBuilder()
                     .command("docker", "run", "--rm", "--network", "none",
                             "--memory", "150m", "cc-python:dev", "sh", "-c", dockerCommand)
@@ -71,7 +71,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             String output = outputReader(p);
             long endTime = System.currentTimeMillis();
             float time = (float) (endTime - startTime) / 1000;
-            if(output.contains("Terminated")){
+            if(output.contains("Killed")){
                 result.setOut("Your code took too long to execute!");
                 result.setTte(time);
             }
@@ -90,18 +90,18 @@ public class CodeExecutorImpl implements CodeExecutor {
     private ExecResult execJavaCode(Code code) {
 
         try {
-            String dockerCommand = String.format("echo \"%s\" > Main.java && javac Main.java && timeout 10 java Main ; echo $? ; exit", code.getCode().replace("\"", "\\\""));
+            String dockerCommand = String.format("echo \"%s\" > Main.java && javac Main.java && timeout -s SIGKILL 10 java Main ; exit", code.getCode().replace("\"", "\\\""));
             ProcessBuilder pb = new ProcessBuilder()
                     .command("docker", "run", "--rm", "--network", "none",
-                            "--memory", "1000m", "cc-java:dev", "sh", "-c", dockerCommand)
+                            "--memory", "150m", "cc-java:dev", "sh", "-c", dockerCommand)
                     .redirectErrorStream(true);
             ExecResult result = new ExecResult();
             Process p = pb.start();
             long startTime = System.currentTimeMillis();
             String output = outputReader(p);
             long endTime = System.currentTimeMillis();
-            float time = (float) (endTime - startTime) / 1000;
-            if(output.contains("124")){
+            float time = (float) (endTime - startTime - 1) / 1000;
+            if(output.contains("Killed")){
                 result.setOut("Your code took too long to execute!");
                 result.setTte(time);
             }
