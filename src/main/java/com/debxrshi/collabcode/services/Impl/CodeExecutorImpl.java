@@ -44,6 +44,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             int maxOutputSize = 100000;
             while((line = reader.readLine()) != null){
                 if (sb.length() + line.length() > maxOutputSize) {
+                    process.destroyForcibly();
                     sb.append("\nYour code generates output longer than allowed limit.");
                     break;
                 }
@@ -153,7 +154,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             String dockerCommand = String.format("echo \"%s\" > main.cpp && g++ main.cpp -o main && timeout -s SIGKILL 10 ./main ; exit", code.getCode().replace("\"", "\\\""));
             ProcessBuilder pb = new ProcessBuilder()
                     .command("docker", "run", "--rm", "--network", "none",
-                            "--memory", "2500m", "cc-gxx:dev", "sh", "-c", dockerCommand)
+                            "--memory", "150m", "cc-gxx:dev", "sh", "-c", dockerCommand)
                     .redirectErrorStream(true);
             ExecResult result = new ExecResult();
             Process p = pb.start();
