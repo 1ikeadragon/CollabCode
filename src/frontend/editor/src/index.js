@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Nav/>
-    <div className='sex'>
+    <div className='nex'>
     <CodeEditor />
     </div>
   </React.StrictMode>

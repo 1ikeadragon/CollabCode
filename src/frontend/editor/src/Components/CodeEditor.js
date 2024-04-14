@@ -27,6 +27,8 @@ function CodeEditor() {
         var codes=editorRef.current.getValue()
         const obj={code:codes,lang:language}
         console.log(language)
+        setOutput("")
+        setTime("")
         fetch('http://127.1:8080/exec', {
             method: 'POST',
             headers: {
@@ -66,6 +68,7 @@ function CodeEditor() {
                 />
 
             </div>
+            
             <Terminal output={output} time={time} />
         </>
 

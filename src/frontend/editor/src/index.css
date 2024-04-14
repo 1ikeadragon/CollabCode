@@ -35,7 +35,7 @@ code {
   overflow: auto; /* Add this line */
 }
 
-  .sex{
+  .nex{
     display: flex;
     justify-content: space-evenly;
   }
