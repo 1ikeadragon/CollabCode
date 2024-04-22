@@ -109,7 +109,7 @@ public class CodeExecutorImpl implements CodeExecutor {
             long endTime = System.currentTimeMillis();
             float time = (float) (endTime - startTime - 1) / 1000;
             if(output.contains("Killed")){
-                result.setOut("Your code took too long to execute!");
+                result.setOut("Your code took too long to execute or took up too many resources!");
                 result.setTte(10F);
             }
             else{

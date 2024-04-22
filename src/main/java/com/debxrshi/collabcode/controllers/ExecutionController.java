@@ -17,7 +17,7 @@ public class ExecutionController {
 
     @Autowired
     private CodeExecutorImpl exec;
-    @PostMapping("/exec")
+    @PostMapping(value = "/exec", produces = "application/json", consumes = "application/json")
     public ExecResult executeCode(@RequestBody Code code) throws IOException, InterruptedException {
         return exec.execCode(code);
     }
