@@ -7,19 +7,18 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-    
+
 
 @Service
 public class CodeExecutorImpl implements CodeExecutor {
 
-    public ExecResult execCode(Code code){
+    public ExecResult execCode(Code code) {
         String lang = code.getLang();
         return switch (lang) {
             case "python" -> execPythonCode(code);
-//            case "javascript" -> execJavaScriptCode(code);
+            case "javascript" -> execJavaScriptCode(code);
             case "java" -> execJavaCode(code);
             case "haskell" -> execHaskellCode(code);
-            case "brainfuck" -> execBrainfuckCode(code);
             case "riscv" -> execRISCVCode(code);
             case "asm86" -> execASM86Code(code);
             case "arm64" -> execARM64Code(code);
@@ -31,18 +30,17 @@ public class CodeExecutorImpl implements CodeExecutor {
             case "golang" -> execGoCode(code);
             case "bash" -> execBashCode(code);
             case "powershell" -> execPSCode(code);
-            case "A++" -> execAppCode(code);
-            default -> new ExecResult("Unsupported Language: "+code.getLang(),0.00F);
-            };
-        }
+            default -> new ExecResult("Unsupported Language: " + code.getLang(), 0.00F);
+        };
+    }
 
-    public String outputReader(Process process){
-        try{
+    public String outputReader(Process process) {
+        try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder sb = new StringBuilder();
             String line = null;
             int maxOutputSize = 100000;
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 if (sb.length() + line.length() > maxOutputSize) {
                     process.destroyForcibly();
                     sb.append("\nYour code generates output longer than allowed limit.");
@@ -52,8 +50,7 @@ public class CodeExecutorImpl implements CodeExecutor {
                 sb.append("\n");
             }
             return sb.toString();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -61,6 +58,34 @@ public class CodeExecutorImpl implements CodeExecutor {
 
     private ExecResult execASM86Code(Code code) {
         return null;
+    }
+
+    private ExecResult execJavaScriptCode(Code code) {
+        try{
+            String dockerCommand = String.format("echo \"%s\" > a.js && timeout -s SIGKILL 10 node a.js ; exit", code.getCode().replace("\"","\\\""));
+            ProcessBuilder pb = new ProcessBuilder()
+                    .command("docker","run","--rm","--network","none","--memory","150m","cc-node:dev","sh","-c", dockerCommand)
+                    .redirectErrorStream(true);
+            ExecResult result = new ExecResult();
+            Process p = pb.start();
+            long startTime = System.currentTimeMillis();
+            String output = outputReader(p);
+            p.destroyForcibly();
+            long endTime = System.currentTimeMillis();
+            float time = (float) (endTime - startTime) / 1000;
+            if (output.contains("Killed")) {
+                result.setOut("Your code took too long to execute!");
+                result.setTte(time);
+            }
+            else {
+                result.setOut(output.trim());
+                result.setTte(time);
+            }
+            return result;
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     private ExecResult execPythonCode(Code code) {
@@ -78,17 +103,16 @@ public class CodeExecutorImpl implements CodeExecutor {
             p.destroyForcibly();
             long endTime = System.currentTimeMillis();
             float time = (float) (endTime - startTime) / 1000;
-            if(output.contains("Killed")){
+            if (output.contains("Killed")) {
                 result.setOut("Your code took too long to execute!");
                 result.setTte(time);
             }
-            else{
+            else {
                 result.setOut(output.trim());
                 result.setTte(time);
             }
             return result;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -108,24 +132,18 @@ public class CodeExecutorImpl implements CodeExecutor {
             String output = outputReader(p);
             long endTime = System.currentTimeMillis();
             float time = (float) (endTime - startTime - 1) / 1000;
-            if(output.contains("Killed")){
+            if (output.contains("Killed")) {
                 result.setOut("Your code took too long to execute or took up too many resources!");
                 result.setTte(10F);
-            }
-            else{
+            } else {
                 result.setOut(output.trim());
                 result.setTte(time);
             }
             return result;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-    }
-
-    private ExecResult execAppCode(Code code) {
-        return null;
     }
 
     private ExecResult execPSCode(Code code) {
@@ -162,27 +180,21 @@ public class CodeExecutorImpl implements CodeExecutor {
             String output = outputReader(p);
             long endTime = System.currentTimeMillis();
             float time = (float) (endTime - startTime - 1) / 1000;
-            if(output.contains("Killed")){
+            if (output.contains("Killed")) {
                 result.setOut("Your code took too long to execute!");
                 result.setTte(time);
-            }
-            else{
+            } else {
                 result.setOut(output.trim());
                 result.setTte(time);
             }
             return result;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
 
     private ExecResult execCCode(Code code) {
-        return null;
-    }
-
-    private ExecResult execBrainfuckCode(Code code) {
         return null;
     }
 
