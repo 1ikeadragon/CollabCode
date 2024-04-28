@@ -1,2 +1,4 @@
-package com.debxrshi.collabcode.repository;public class UserRepository {
+package com.debxrshi.collabcode.repository;
+
+public class UserRepository {
 }

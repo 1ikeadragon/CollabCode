@@ -1,2 +1,4 @@
-package com.debxrshi.collabcode.repository;public interface RoomRepository {
+package com.debxrshi.collabcode.repository;
+
+public interface RoomRepository {
 }

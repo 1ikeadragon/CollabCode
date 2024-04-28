@@ -1,2 +1,4 @@
-package com.debxrshi.collabcode.controllers;public class AuthController {
+package com.debxrshi.collabcode.controllers;
+
+public class AuthController {
 }

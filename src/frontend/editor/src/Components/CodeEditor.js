@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import logo from "../logo.svg";
 import { Editor } from "@monaco-editor/react";
 import Terminal from "./Terminal";
 
