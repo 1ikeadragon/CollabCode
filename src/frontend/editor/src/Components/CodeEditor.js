@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Editor } from "@monaco-editor/react";
+    import { Editor } from "@monaco-editor/react";
 import Terminal from "./Terminal";
 
 function CodeEditor() {
