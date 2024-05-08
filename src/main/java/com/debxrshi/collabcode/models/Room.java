@@ -5,5 +5,5 @@ public class Room {
     private String creatorId;
     private String lang;
     private String key;
-    String code;
+    Code code;
 }
