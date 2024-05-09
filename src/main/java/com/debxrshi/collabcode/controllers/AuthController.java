@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
-    @Autowired
-    private UserRepository userRepository;
+//
+//    @Autowired
+//    private UserRepository userRepository;
 
 //    @PostMapping("/signUp")
 //    public ResponseEntity<?> signUp(@RequestBody User user){

@@ -25,16 +25,16 @@ public class RoomController {
 
 
     //TODO: PostMapping(createRoom)
-    //TODO: GetMapping(joinRoom)
+    //TODO: PostMapping(joinRoom)
 
     @PostMapping(value = "/createRoom", consumes = "application/json", produces = "application/json")
     public void createRoom(@RequestBody Room room){
 
     }
 
-    @GetMapping(value = "/joinRoom", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/joinRoom", consumes = "application/json", produces = "application/json")
     public void joinRoom(@RequestBody Room room){
-        
+
     }
 
     @PutMapping(value = "/saveState", consumes = "application/json", produces = "application/json")
