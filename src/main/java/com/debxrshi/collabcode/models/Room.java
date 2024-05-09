@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Room {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "creatorID")
@@ -16,11 +16,22 @@ public class Room {
     @Column(name = "uuid")
     private String uuid;
 
-    @Column(name = "code")
+    @Column(name = "code", columnDefinition = "text")
     private String code;
 
     @Column(name = "lang")
     private String lang;
+
+    @Column(name = "roomKey")
+    private String roomKey;
+
+    public String getRoomKey() {
+        return roomKey;
+    }
+
+    public void setRoomKey(String roomKey) {
+        this.roomKey = roomKey;
+    }
 
     public long getId() {
         return id;

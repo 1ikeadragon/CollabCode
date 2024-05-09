@@ -31,12 +31,15 @@ function Room() {
     const joinClick = (e) => {
         setIsjoin(true)
         setIsOpen(true)
+        
     }
 
     const createRoom=(e)=>{
         setValue(crypto.randomUUID())
         setIsOpen(true);
         setIsjoin(false)
+
+        
     }
 
 

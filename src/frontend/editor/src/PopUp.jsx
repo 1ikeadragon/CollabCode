@@ -26,10 +26,10 @@ function PopUp({ onClose, textValue }) {
     }
 
     try {
-      const response = await fetch('/api/createRoom', {
+      const response = await fetch('http://127.1:8080/api/createRoom', {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ roomId, secretKey }),
+        body: JSON.stringify({ uuid:roomId, roomKey:secretKey, code:"", lang:"python" }),
       });
 
       if (response.ok) {
