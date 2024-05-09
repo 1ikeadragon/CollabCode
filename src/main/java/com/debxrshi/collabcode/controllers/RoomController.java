@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@RequestMapping("/api")
 public class RoomController {
 
 
@@ -27,15 +28,13 @@ public class RoomController {
     //TODO: GetMapping(joinRoom)
 
     @PostMapping(value = "/createRoom", consumes = "application/json", produces = "application/json")
-    public String createRoom(){
-        // Creates Room object and assigns values to fields.
-        String uuid = null;
-        return uuid;
+    public void createRoom(@RequestBody Room room){
+
     }
 
     @GetMapping(value = "/joinRoom", consumes = "application/json", produces = "application/json")
-    public void joinRoom(){
-        // Join room with roomKey as [GET] returns HTTP.200/401
+    public void joinRoom(@RequestBody Room room){
+        
     }
 
     @PutMapping(value = "/saveState", consumes = "application/json", produces = "application/json")
