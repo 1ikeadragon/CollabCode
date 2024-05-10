@@ -79,8 +79,8 @@ function Room() {
                         </div>
                     </div>
                     {console.log(value)}
-                    {isOpen && <PopUp textValue={value} onClose={()=>{setIsOpen(false)}} />}
-                    {isOpen && isJoin && <PopUp textValue={value} onClose={()=>{setIsOpen(false)}} />}
+                    {isOpen && <PopUp textValue={value} type='new' onClose={()=>{setIsOpen(false)}} />}
+                    {isOpen && isJoin && <PopUp textValue={value} type='existing' onClose={()=>{setIsOpen(false)}} />}
 
                 </div>
 

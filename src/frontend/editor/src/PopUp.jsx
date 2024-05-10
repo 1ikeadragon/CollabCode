@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
-function PopUp({ onClose, textValue }) {
+function PopUp({ onClose, textValue ,type}) {
   const [borderColor, setBorderColor] = useState('border-blue-500');
   const [fontColor, setFontColor] = useState();
   const inputRef = useRef();
@@ -33,18 +33,57 @@ function PopUp({ onClose, textValue }) {
       });
 
       if (response.ok) {
-        const data = await response.json(); 
+        const data = await response.text(); 
 
         console.log('Room joined:', data); 
 
-        navigate('/CodeEditor'); 
+        navigate(`/CodeEditor/${textValue}/${value}`); 
       } else {
-        console.error('Failed to join room:', response.statusText);
+        console.log('Failed to join room:', response.statusText);
         setBorderColor('border-red-500');
         setFontColor('placeholder-red-600');
       }
     } catch (error) {
-      console.error('Error joining room:', error);
+      console.log('Error joining room:', error);
+      setBorderColor('border-red-500');
+      setFontColor('placeholder-red-600');
+    }
+  };
+  const handleErrorJoin = async (e) => {
+    e.preventDefault(); 
+    const roomId = textValue; 
+    const secretKey = inputRef.current.value;
+
+    if (!roomId || !secretKey || roomId.trim().length === 0 || secretKey.trim().length === 0) {
+      setBorderColor('border-red-500');
+      setFontColor('placeholder-red-600');
+      setTimeout(() => {
+        setBorderColor('border-blue-500');
+        setFontColor();
+      }, 2000);
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://127.1:8080/api/joinRoom?uuid=${textValue}&roomKey=${value}`, {
+        method: 'Get', 
+        headers: { 'Content-Type': 'application/json' }, 
+        //body: JSON.stringify({ uuid:roomId, roomKey:secretKey, code:"", lang:"python" }),
+      });
+
+      if (response.ok) {
+        const data = await response.json()
+
+        console.log('Room joined:', data); 
+
+        navigate(`/CodeEditor/${textValue}/${value}`); 
+      } else {
+        console.log('Failed to join room:', response.statusText);
+        setBorderColor('border-red-500');
+        setFontColor('placeholder-red-600');
+      }
+    } catch (error) {
+      console.log('Error joining room:', error);
       setBorderColor('border-red-500');
       setFontColor('placeholder-red-600');
     }
@@ -66,12 +105,18 @@ function PopUp({ onClose, textValue }) {
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
-          <button
+          {type=='new' &&<button
             className="bg-white text-grey-300 hover:bg-green-600 border hover:text-white border-grey-300 py-2 px-4 mt-4 text-lg mr-5 rounded-lg font-bold py-2 px-4 mt-4 mb-4 text-lg rounded focus:outline-none focus:shadow-outline"
             onClick={handleError}
           >
+            Create
+          </button>}
+          {type=='existing' &&<button
+            className="bg-white text-grey-300 hover:bg-green-600 border hover:text-white border-grey-300 py-2 px-4 mt-4 text-lg mr-5 rounded-lg font-bold py-2 px-4 mt-4 mb-4 text-lg rounded focus:outline-none focus:shadow-outline"
+            onClick={handleErrorJoin}
+          >
             Join
-          </button>
+          </button>}
         </div>
       </div>
     </div>

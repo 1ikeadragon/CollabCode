@@ -18,7 +18,7 @@ const router=createBrowserRouter([
    children:[
     {path:'',
      element:<Room/>},
-    {path:'CodeEditor',
+    {path:'CodeEditor/:uuid/:key',
      element:<CodeEditor/>},
    ]
  }
