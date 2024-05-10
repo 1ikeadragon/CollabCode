@@ -13,7 +13,7 @@ public class Room {
     @Column(name = "creatorID")
     private long creatorID;
 
-    @Column(name = "uuid")
+    @Column(name = "uuid", unique = true)
     private String uuid;
 
     @Column(name = "code", columnDefinition = "text")

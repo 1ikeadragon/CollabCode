@@ -40,9 +40,9 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body("Room Created!");
     }
 
-    @PostMapping(value = "/joinRoom", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Object> joinRoom(@RequestBody Room room) {
-        Room roomObj = roomRepository.findByUuidAndRoomKey(room.getUuid(), room.getRoomKey());
+    @GetMapping(value = "/joinRoom", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Object> joinRoom(@RequestParam String uuid, String roomKey) {
+        Room roomObj = roomRepository.findByUuidAndRoomKey(uuid, roomKey);
         if (roomObj != null) {
             return ResponseEntity.status(HttpStatus.OK).body(roomObj);
         }
@@ -50,8 +50,12 @@ public class RoomController {
     }
 
     @PutMapping(value = "/saveState", consumes = "application/json", produces = "application/json")
-    public void saveState(@RequestBody Room room ){
-        // Update Code value of Room object
+    public ResponseEntity<Object> saveState(@RequestBody Room room ){
+        if(roomRepository.findByUuidAndRoomKey(room.getUuid(),room.getRoomKey()) != null){
+            roomRepository.save(room);
+            return ResponseEntity.status(HttpStatus.OK).body(room);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Check your credentials! Wrong ID or KEY");
     }
 
 }
