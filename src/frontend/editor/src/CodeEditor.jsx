@@ -1,5 +1,5 @@
 import { useState, useRef ,useEffect} from "react";
-import { Link, NavLink, useNavigate, useParams } from 'react-router-dom'
+import { Link, NavLink, useNavigate, useParams ,useLocation} from 'react-router-dom'
 import { Editor } from "@monaco-editor/react";
 import Swal from 'sweetalert2';
 import Terminal from "./Terminal";
@@ -12,13 +12,17 @@ function CodeEditor() {
     const [language, setLanguage] = useState('javascript');
     const [output, setOutput] = useState("");
     const [time, setTime] = useState("");
-    const{uuid,key}=useParams()
+    const{uuid}=useParams()
+    const[key,setKey]=useState(localStorage.getItem("key"))
+
 
     useEffect(() => {
+        
         if (!uuid || !key) {
           navigate("/");
         }
         else {
+         
           fetch(`http://127.1:8080/api/joinRoom?uuid=${uuid}&roomKey=${key}`, {
                             method: 'GET',
                             headers: {
@@ -36,6 +40,7 @@ function CodeEditor() {
                                 setId(data1.id)
                                 setCode(data1.code)
                                 console.log(data1)
+                                
                             })
         }
     }, [])
@@ -55,11 +60,9 @@ function CodeEditor() {
 
     const runCode = () => {
         let timerInterval;
-            Swal.fire({
+        Swal.fire({
             title: "Executing",
             background: 'black',
-            //html: "executing.",
-            timer: 360,
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading();
@@ -71,13 +74,8 @@ function CodeEditor() {
             willClose: () => {
                 clearInterval(timerInterval);
             }
-            }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log("I was closed by the timer");
-            }
-            });
-
+        });
+    
         var codes = editorRef.current.getValue()
         const obj = { code: codes, lang: language }
         console.log(language)
@@ -89,12 +87,16 @@ function CodeEditor() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(obj)
-
+    
         }).then(response => response.json())
             .then(data => {
                 setOutput(data.out)
                 setTime(data.tte)
-            }).catch(console.error())
+                Swal.close(); 
+            }).catch(error => {
+                console.error(error)
+                Swal.close();
+            })
     };
     const saveCode=()=>{
         fetch('http://127.1:8080/api/saveState', {

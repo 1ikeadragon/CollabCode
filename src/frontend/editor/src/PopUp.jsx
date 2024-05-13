@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,Route} from 'react-router-dom';
+import CodeEditor from './CodeEditor';
 
 function PopUp({ onClose, textValue ,type}) {
   const [borderColor, setBorderColor] = useState('border-blue-500');
@@ -14,6 +15,7 @@ function PopUp({ onClose, textValue ,type}) {
     e.preventDefault(); 
     const roomId = textValue; 
     const secretKey = inputRef.current.value;
+
 
     if (!roomId || !secretKey || roomId.trim().length === 0 || secretKey.trim().length === 0) {
       setBorderColor('border-red-500');
@@ -36,8 +38,10 @@ function PopUp({ onClose, textValue ,type}) {
         const data = await response.text(); 
 
         console.log('Room joined:', data); 
-
-        navigate(`/CodeEditor/${textValue}/${value}`); 
+        localStorage.setItem("key",secretKey)
+        navigate(`/CodeEditor/${textValue}`)
+        //<Route path="/CodeEditor/:textValue/:value" render={(routeProps) => <CodeEditor {...routeProps} uuid={routeProps.match.params.value} />} />
+        //<Route path={`/CodeEditor/${textValue}/${value}`} render={(routeProps) => <CodeEditor {...routeProps} uuid={value} />} />
       } else {
         console.log('Failed to join room:', response.statusText);
         setBorderColor('border-red-500');
@@ -75,8 +79,8 @@ function PopUp({ onClose, textValue ,type}) {
         const data = await response.json()
 
         console.log('Room joined:', data); 
-
-        navigate(`/CodeEditor/${textValue}/${value}`); 
+        localStorage.setItem("key",secretKey)
+        navigate(`/CodeEditor/${textValue}`)
       } else {
         console.log('Failed to join room:', response.statusText);
         setBorderColor('border-red-500');
