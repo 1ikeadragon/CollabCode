@@ -13,6 +13,7 @@ function CodeEditor() {
     const [output, setOutput] = useState("");
     const [time, setTime] = useState("");
     const{uuid,key}=useParams()
+
     useEffect(() => {
         if (!uuid || !key) {
           navigate("/");
@@ -31,16 +32,14 @@ function CodeEditor() {
                             }
                         })
                             .then(data1 => {
-                                
                                 setLanguage(data1.lang)
                                 setId(data1.id)
-                                editorRef.current.setValue(data1.code)
-
+                                setCode(data1.code)
                                 console.log(data1)
-                                
                             })
         }
-      }, [])
+    }, [])
+    
 
     function handleEditorDidMount(editor, monaco) {
         editorRef.current = editor;
@@ -51,7 +50,7 @@ function CodeEditor() {
     }
     const handleLanguageChange = (event) => {
         setLanguage(event.target.value);
-        setCode(''); // Clear the code when language changes
+        setCode(''); 
     };
 
     const runCode = () => {
@@ -78,7 +77,7 @@ function CodeEditor() {
                 console.log("I was closed by the timer");
             }
             });
-        // Add your code execution logic here
+
         var codes = editorRef.current.getValue()
         const obj = { code: codes, lang: language }
         console.log(language)
@@ -163,7 +162,8 @@ function CodeEditor() {
                         width="50vw"
                         theme="vs-dark"
                         onMount={handleEditorDidMount}
-                        language={language} // Set the language dynamically
+                        language={language}
+                        value={code} 
                     />
 
                 </div>
