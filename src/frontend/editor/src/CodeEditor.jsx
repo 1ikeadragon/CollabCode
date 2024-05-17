@@ -20,7 +20,7 @@ function CodeEditor() {
           navigate("/");
         }
         else {
-          fetch(`http://192.168.1.8:8080/api/joinRoom?uuid=${uuid}&roomKey=${key}`, {
+          fetch(`http://127.1:8080/api/joinRoom?uuid=${uuid}&roomKey=${key}`, {
                             method: 'GET',
                             headers: {
                             'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ function CodeEditor() {
 
     function handleEditorDidMount(editor, monaco) {
         editorRef.current = editor;
-        const socket = new WebSocket(`ws://192.168.1.8:8080/websocket/${uuid}`);
+        const socket = new WebSocket(`ws://127.1:8080/websocket/${uuid}`);
         socket.onopen = () => {
             console.log("WebSocket connection opened");
         };
@@ -105,7 +105,7 @@ function CodeEditor() {
         console.log(language)
         setOutput("")
         setTime("")
-        fetch('http://192.168.1.8:8080/api/exec', {
+        fetch('http://127.1:8080/api/exec', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -123,7 +123,7 @@ function CodeEditor() {
             })
     };
     const saveCode=()=>{
-        fetch('http://192.168.1.8:8080/api/saveState', {
+        fetch('http://127.1:8080/api/saveState', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
