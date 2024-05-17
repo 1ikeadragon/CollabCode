@@ -4,15 +4,13 @@ import com.debxrshi.collabcode.models.Code;
 import com.debxrshi.collabcode.models.ExecResult;
 import com.debxrshi.collabcode.services.Impl.CodeExecutorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @CrossOrigin
 @RestController
+@RequestMapping("/api")
 public class ExecutionController {
 
     @Autowired

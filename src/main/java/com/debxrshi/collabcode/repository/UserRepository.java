@@ -1,4 +1,9 @@
 package com.debxrshi.collabcode.repository;
 
-public class UserRepository {
+import com.debxrshi.collabcode.models.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByUsernameAndPassword(String user, String pass);
 }
