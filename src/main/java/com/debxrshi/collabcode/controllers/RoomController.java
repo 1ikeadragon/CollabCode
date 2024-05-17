@@ -16,23 +16,6 @@ public class RoomController {
 
     @Autowired
     private RoomRepository roomRepository;
-    /*
-     * req -> /createRoom -> d.lang (d.user inferred) d.roomKey
-     * res -> UUID(username), roomCreate(UUID, lang) -> CodeExec url -> http://127.1/room/UUID
-     * req -> saveBtn -> /saveCode -> d.lang (d.user inferred) d.code d.roomKey
-     */
-
-
-     /*
-      * table schema
-      * ID USER PASS EMAIL
-      * CREATORID ROOMID LANG CODE ROOMKEY
-      *
-      */
-
-
-    //TODO: PostMapping(createRoom)
-    //TODO: PostMapping(joinRoom)
 
     @PostMapping(value = "/createRoom", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> createRoom(@RequestBody Room room){
