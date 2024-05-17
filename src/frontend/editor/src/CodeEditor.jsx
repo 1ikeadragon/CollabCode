@@ -15,14 +15,11 @@ function CodeEditor() {
     const{uuid}=useParams()
     const[key,setKey]=useState(localStorage.getItem("key"))
 
-
     useEffect(() => {
-        
         if (!uuid || !key) {
           navigate("/");
         }
         else {
-         
           fetch(`http://127.1:8080/api/joinRoom?uuid=${uuid}&roomKey=${key}`, {
                             method: 'GET',
                             headers: {
@@ -43,11 +40,38 @@ function CodeEditor() {
                                 
                             })
         }
+
+        
     }, [])
-    
 
     function handleEditorDidMount(editor, monaco) {
         editorRef.current = editor;
+        const socket = new WebSocket(`ws://127.1:8080/websocket/${uuid}`);
+        socket.onopen = () => {
+            console.log("WebSocket connection opened");
+        };
+        
+        socket.onclose = () => {
+            console.log("WebSocket connection closed");
+        };
+
+        editorRef.current.onDidChangeModelContent(() => {
+            const value = editorRef.current.getValue();
+            console.log("Sending message: ", value);
+            socket.send(value);
+        });
+        
+
+        socket.onmessage = (event) => {
+            console.log("Received message: ", event.data);
+            if (editor.getValue() !== event.data){
+                editorRef.current.setValue(event.data);
+            }
+        };
+
+        return () => {
+            socket.close();
+        };
     }
 
     const getEditorValue = () => {
