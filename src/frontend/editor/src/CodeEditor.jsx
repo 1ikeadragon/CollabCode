@@ -1,5 +1,5 @@
 import { useState, useRef ,useEffect} from "react";
-import { Link, NavLink, useNavigate, useParams ,useLocation} from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Editor } from "@monaco-editor/react";
 import Swal from 'sweetalert2';
 import Terminal from "./Terminal";
