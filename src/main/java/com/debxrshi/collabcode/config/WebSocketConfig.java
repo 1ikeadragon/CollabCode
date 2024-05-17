@@ -1,5 +1,2 @@
-package com.debxrshi.collabcode.config;
-
-public class WebSocketConfig {
-
+package com.debxrshi.collabcode.config;public class WebSocketConfig {
 }
