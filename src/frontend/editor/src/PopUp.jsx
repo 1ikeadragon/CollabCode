@@ -27,7 +27,7 @@ function PopUp({ onClose, textValue ,type}) {
     }
 
     try {
-      const response = await fetch('http://127.1:8080/api/createRoom', {
+      const response = await fetch('http://192.168.1.4:8080/api/createRoom', {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
         body: JSON.stringify({ uuid:roomId, roomKey:secretKey, code:"", lang:"python" }),
@@ -66,7 +66,7 @@ function PopUp({ onClose, textValue ,type}) {
     }
 
     try {
-      const response = await fetch(`http://127.1:8080/api/joinRoom?uuid=${textValue}&roomKey=${value}`, {
+      const response = await fetch(`http://192.168.1.4:8080/api/joinRoom?uuid=${textValue}&roomKey=${value}`, {
         method: 'Get', 
         headers: { 'Content-Type': 'application/json' }, 
         //body: JSON.stringify({ uuid:roomId, roomKey:secretKey, code:"", lang:"python" }),

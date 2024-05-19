@@ -18,6 +18,6 @@ public class ExecutionController {
 
     @PostMapping(value = "/exec", produces = "application/json", consumes = "application/json")
     public ExecResult executeCode(@RequestBody Code code) {
-        return codeExecutor.execCode(code);
+        return codeExecutor.codeExecutor(code);
     }
 }

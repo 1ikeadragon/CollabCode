@@ -64,7 +64,7 @@ function Room() {
                             <p className='my-3'>Collaborative coding platform</p>
                         </div>
 
-                        <div className='text-xl font-normal my-5'>Collaborate and code in 10 languages with just a click, free.</div>
+                        <div className='text-xl font-normal my-5'>Collaborate and try out multiple languages with just a click, free.</div>
 
                         <div className='flex justify-start items-center'>
 

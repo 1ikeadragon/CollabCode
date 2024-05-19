@@ -15,7 +15,7 @@ public class JavaScriptExecutor implements CodeExecutionStrategy {
     public ExecResult execCode(Code code) {
         try {
             String containerName = code.getLang() + UUID.randomUUID();
-            String dockerCommand = String.format("echo \"%s\" > a.js && timeout -s SIGKILL 10 node a.js ; exit", code.getCode().replace("\"", "\\\""));
+            String dockerCommand = String.format("echo \"%s\" > main.js && timeout -s SIGKILL 10 node main.js ; exit", code.getCode().replace("\"", "\\\""));
             ProcessBuilder pb = new ProcessBuilder()
                     .command("docker", "run", "--rm", "--name", containerName, "--network", "none", "--memory", "150m", "cc-node:dev", "sh", "-c", dockerCommand)
                     .redirectErrorStream(true);

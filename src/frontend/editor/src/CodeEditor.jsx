@@ -20,7 +20,7 @@ function CodeEditor() {
           navigate("/");
         }
         else {
-          fetch(`http://127.1:8080/api/joinRoom?uuid=${uuid}&roomKey=${key}`, {
+          fetch(`http://192.168.1.4:8080/api/joinRoom?uuid=${uuid}&roomKey=${key}`, {
                             method: 'GET',
                             headers: {
                             'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ function CodeEditor() {
 
     function handleEditorDidMount(editor, monaco) {
         editorRef.current = editor;
-        const socket = new WebSocket(`ws://127.1:8080/websocket/${uuid}`);
+        const socket = new WebSocket(`ws://192.168.1.4:8080/websocket/${uuid}`);
         socket.onopen = () => {
             console.log("WebSocket connection opened");
         };
@@ -55,20 +55,26 @@ function CodeEditor() {
             console.log("WebSocket connection closed");
         };
 
-        editorRef.current.onDidChangeModelContent(() => {
-            const value = editorRef.current.getValue();
-            console.log("Sending message: ", value);
-            socket.send(value);
+        let isLocalChange = false;
+
+        editor.onDidChangeModelContent(() => {
+            if (!isLocalChange) {
+                const value = editor.getValue();
+                socket.send(value);
+
+            }
         });
-        
 
         socket.onmessage = (event) => {
-            console.log("Received message: ", event.data);
-            if (editor.getValue() !== event.data){
-                editorRef.current.setValue(event.data);
-            }
-        };
+            const content = event.data;
+            const selection = editor.getSelection();
 
+            isLocalChange = true;
+            editor.setValue(content);
+            isLocalChange = false;
+
+            editor.setSelection(selection);
+        };
         return () => {
             socket.close();
         };
@@ -105,7 +111,7 @@ function CodeEditor() {
         console.log(language)
         setOutput("")
         setTime("")
-        fetch('http://127.1:8080/api/exec', {
+        fetch('http://192.168.1.4:8080/api/exec', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -123,7 +129,7 @@ function CodeEditor() {
             })
     };
     const saveCode=()=>{
-        fetch('http://127.1:8080/api/saveState', {
+        fetch('http://192.168.1.4:8080/api/saveState', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

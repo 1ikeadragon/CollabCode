@@ -21,12 +21,12 @@ public class CodeExecutorImpl {
     private PythonExecutor pythonExecutor;
     @Autowired
     private CppExecutor cppExecutor;
-//    @Autowired
-//    private GoExecutor goExecutor;
-//    @Autowired
-//    private RustExecutor rustExecutor;
+    @Autowired
+    private GoExecutor goExecutor;
+    @Autowired
+    private RustExecutor rustExecutor;
 
-    public ExecResult execCode(Code code) {
+    public ExecResult codeExecutor(Code code) {
         String lang = code.getLang();
         return switch (lang) {
             case "python" -> pythonExecutor.execCode(code);
@@ -34,6 +34,8 @@ public class CodeExecutorImpl {
             case "java" -> javaExecutor.execCode(code);
             case "c" -> cExecutor.execCode(code);
             case "cpp" -> cppExecutor.execCode(code);
+            case "go" -> goExecutor.execCode(code);
+            case "rust" -> rustExecutor.execCode(code);
             default -> new ExecResult("Unsupported Language: " + code.getLang(), 0.00F);
         };
     }

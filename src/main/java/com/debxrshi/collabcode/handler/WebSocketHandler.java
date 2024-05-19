@@ -1,5 +1,6 @@
 package com.debxrshi.collabcode.handler;
 
+
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -11,13 +12,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private static Map<String, Set<WebSocketSession>> roomSessions = new HashMap<>();
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception{
+    public void afterConnectionEstablished(WebSocketSession session) {
         String roomId = getRoomId(session);
         roomSessions.computeIfAbsent(roomId, k -> new HashSet<>()).add(session);
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception{
+    protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) {
         String roomId = getRoomId(session);
         Set<WebSocketSession> sessions = roomSessions.get(roomId);
         if (sessions != null) {
