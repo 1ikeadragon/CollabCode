@@ -4,3 +4,4 @@
 src/frontend/editor/node_modules
 target/
 .DS_Store
+src/frontend/editor/package-lock.json
