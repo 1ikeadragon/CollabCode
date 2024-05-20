@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class ExecutionController {
 
     @Autowired
-    private CodeExecutorImpl codeExecutor ;
+    private CodeExecutorImpl codeExecutor;
 
 
     @PostMapping(value = "/exec", produces = "application/json", consumes = "application/json")

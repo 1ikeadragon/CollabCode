@@ -18,7 +18,7 @@ public class RoomController {
     private RoomRepository roomRepository;
 
     @PostMapping(value = "/createRoom", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Object> createRoom(@RequestBody Room room){
+    public ResponseEntity<Object> createRoom(@RequestBody Room room) {
         roomRepository.save(room);
         return ResponseEntity.status(HttpStatus.OK).body("Room Created!");
     }
@@ -33,8 +33,8 @@ public class RoomController {
     }
 
     @PutMapping(value = "/saveState", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Object> saveState(@RequestBody Room room ){
-        if(roomRepository.findByUuidAndRoomKey(room.getUuid(),room.getRoomKey()) != null){
+    public ResponseEntity<Object> saveState(@RequestBody Room room) {
+        if (roomRepository.findByUuidAndRoomKey(room.getUuid(), room.getRoomKey()) != null) {
             roomRepository.save(room);
             return ResponseEntity.status(HttpStatus.OK).body(room);
         }

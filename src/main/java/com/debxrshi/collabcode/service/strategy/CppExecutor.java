@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Component
+@Component("cpp")
 public class CppExecutor implements CodeExecutionStrategy {
 
-    @Override
+    @Override()
     public ExecResult execCode(Code code) {
         try {
             String containerName = code.getLang() + UUID.randomUUID();

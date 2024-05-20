@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Component
-public class RustExecutor implements  CodeExecutionStrategy {
+@Component("rust")
+public class RustExecutor implements CodeExecutionStrategy {
 
     @Override
-    public ExecResult execCode(Code code){
+    public ExecResult execCode(Code code) {
 
         try {
             String containerName = code.getLang() + UUID.randomUUID();

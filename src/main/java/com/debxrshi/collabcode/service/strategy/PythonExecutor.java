@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Component
-public class PythonExecutor implements CodeExecutionStrategy{
+@Component("python")
+public class PythonExecutor implements CodeExecutionStrategy {
 
     @Override
-    public ExecResult execCode(Code code){
+    public ExecResult execCode(Code code) {
         try {
-            String containerName = code.getLang()+ UUID.randomUUID();
+            String containerName = code.getLang() + UUID.randomUUID();
             String dockerCommand = String.format("echo \"%s\" > a.py && timeout -s SIGKILL 10 python3 a.py ; exit", code.getCode().replace("\"", "\\\""));
             ProcessBuilder pb = new ProcessBuilder()
                     .command("docker", "run", "--rm", "--name", containerName, "--network", "none",
@@ -28,8 +28,7 @@ public class PythonExecutor implements CodeExecutionStrategy{
             if (output.contains("Killed")) {
                 result.setOut("Your code took too long to execute!");
                 result.setTte(time);
-            }
-            else {
+            } else {
                 result.setOut(output.trim());
                 result.setTte(time);
             }

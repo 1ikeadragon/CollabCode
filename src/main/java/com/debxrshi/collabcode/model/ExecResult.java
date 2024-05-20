@@ -6,6 +6,7 @@ public class ExecResult {
 
     public ExecResult() {
     }
+
     public ExecResult(String out, float tte) {
         this.out = out;
         this.tte = tte;

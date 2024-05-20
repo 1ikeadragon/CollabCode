@@ -5,11 +5,14 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    private static Map<String, Set<WebSocketSession>> roomSessions = new HashMap<>();
+    private static final Map<String, Set<WebSocketSession>> roomSessions = new HashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
