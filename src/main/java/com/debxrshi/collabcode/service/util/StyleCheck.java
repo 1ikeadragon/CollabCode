@@ -10,6 +10,6 @@ public final class StyleCheck {
     }
 
     public static boolean isAllowed(String style) {
-        return style != null && ALLOWED.stream().anyMatch(style::startsWith);
+        return style != null && ALLOWED.stream().anyMatch(style::equals);
     }
 }

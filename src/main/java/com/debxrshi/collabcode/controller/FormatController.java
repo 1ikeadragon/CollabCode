@@ -24,7 +24,7 @@ public class FormatController {
         }
         Path source = Files.createTempFile("collab", ".cpp");
         Files.writeString(source, code);
-        Process process = new ProcessBuilder("sh", "-c", "clang-format --style=" + style + " " + source).start();
+        Process process = new ProcessBuilder("clang-format", "--style=" + style, source.toString()).start();
         process.waitFor(10, TimeUnit.SECONDS);
         String formatted = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         Files.deleteIfExists(source);
