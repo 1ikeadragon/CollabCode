@@ -98,7 +98,7 @@ function PopUp({ onClose, textValue ,type}) {
       <div className="bg-white px-10 rounded-lg shadow-md h-60 flex flex-col justify-center">
         <div className="flex justify-between">
           <h2 className="mb-4 text-blue-600 font-bold py-2 text-xl mt-4 rounded focus:outline-none focus:shadow-outline w-fit">Room ID : {textValue} </h2>
-          <button onClick={onClose} className="w-fit h-fit"><FontAwesomeIcon icon={faXmark} className="text-2xl text-slate-400 hover:text-red-600 relative bottom-[10px]" /></button>
+          <button type="button" aria-label="Close room dialog" onClick={onClose} className="w-fit h-fit"><FontAwesomeIcon icon={faXmark} className="text-2xl text-slate-400 hover:text-red-600 relative bottom-[10px]" /></button>
         </div>
         <div>
           <input
